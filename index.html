@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Design Collection</title>
+    <title>Super Design Collection - #superdesign</title>
     <style>
         * {
             margin: 0;
@@ -13,35 +13,224 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #fafafa;
+            color: #262626;
+            line-height: 1.6;
+        }
+        
+        header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
         }
         
         .container {
-            text-align: center;
+            max-width: 1400px;
+            margin: 0 auto;
             padding: 2rem;
         }
         
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        .stats {
+            text-align: center;
+            margin: 2rem 0;
+            color: #8e8e8e;
+            font-size: 0.95rem;
         }
         
-        p {
-            font-size: 1.2rem;
-            opacity: 0.9;
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .post-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        .post-embed {
+            width: 100%;
+            min-height: 500px;
+            border: none;
+            flex: 1;
+        }
+        
+        .post-link {
+            display: block;
+            padding: 1rem;
+            text-decoration: none;
+            color: #00376b;
+            font-size: 0.9rem;
+            border-top: 1px solid #efefef;
+            transition: background 0.2s;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .post-link:hover {
+            background: #fafafa;
+        }
+        
+        .post-link::before {
+            content: "🔗 ";
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #8e8e8e;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>#superdesign Collection</h1>
+        <p>Curated food design posts to share with your colleagues</p>
+    </header>
+    
     <div class="container">
-        <h1>Super Design Collection</h1>
-        <p>Welcome to your GitHub Pages site!</p>
+        <div class="stats" id="stats">Loading posts...</div>
+        <div class="grid" id="posts-grid"></div>
     </div>
+
+    <script>
+        // All Instagram URLs from the collection
+        const instagramUrls = [
+            'https://www.instagram.com/p/DTNP12gCMS-/',
+            'https://www.instagram.com/p/DTNbGfaiCrf/',
+            'https://www.instagram.com/p/DTdxh8_iEeA/',
+            'https://www.instagram.com/p/DTHynBOiLzS/',
+            'https://www.instagram.com/p/DThjL3tCF_X/',
+            'https://www.instagram.com/p/DTxE_SiCL3N/',
+            'https://www.instagram.com/p/DTwOZklErRV/',
+            'https://www.instagram.com/p/DTGBtx2k99b/',
+            'https://www.instagram.com/p/DT8vCS8iDQC/',
+            'https://www.instagram.com/p/DTKoAekE1jo/',
+            'https://www.instagram.com/p/DTZ-3sLEpUG/',
+            'https://www.instagram.com/p/DTNhDRKk65D/',
+            'https://www.instagram.com/p/DSVePHMCA2m/',
+            'https://www.instagram.com/p/DTWQ7wjErUA/',
+            'https://www.instagram.com/p/DTIhxEzDf0O/',
+            'https://www.instagram.com/p/DTvTCgPDbh7/',
+            'https://www.instagram.com/p/DTvQFr-iGi1/',
+            'https://www.instagram.com/p/DTV5xYukrRM/',
+            'https://www.instagram.com/p/DT5wLDTE5Kp/',
+            'https://www.instagram.com/p/DTC3FvKDz57/',
+            'https://www.instagram.com/p/DT6auP3iTMN/',
+            'https://www.instagram.com/p/DT77F8rgcnk/',
+            'https://www.instagram.com/p/DT2Ms9hga4o/',
+            'https://www.instagram.com/p/DT-1rN6GPV_/',
+            'https://www.instagram.com/p/DT4uYEgAW3V/',
+            'https://www.instagram.com/p/DTpMnvFgUVi/',
+            'https://www.instagram.com/p/DT84qUaCHio/',
+            'https://www.instagram.com/p/DT9tijYCEj7/',
+            'https://www.instagram.com/p/DUA1zSYgUkK/',
+            'https://www.instagram.com/p/DUDVr23jxAT/',
+            'https://www.instagram.com/p/DTzXzwNjLLB/',
+            'https://www.instagram.com/p/DUVL00nCHEH/',
+            'https://www.instagram.com/p/DT27hBQCMhH/',
+            'https://www.instagram.com/p/DUC4SzbjOL6/',
+            'https://www.instagram.com/p/DUXn9YSiGta/'
+        ];
+
+        function extractPostId(url) {
+            // Remove query parameters and extract post ID
+            const cleanUrl = url.split('?')[0];
+            const match = cleanUrl.match(/\/p\/([A-Za-z0-9_-]+)/);
+            return match ? match[1] : null;
+        }
+
+        function createPostCard(url) {
+            const postId = extractPostId(url);
+            if (!postId) return null;
+
+            const card = document.createElement('div');
+            card.className = 'post-card';
+            
+            // Clean URL for display
+            const cleanUrl = url.split('?')[0];
+            const embedUrl = `https://www.instagram.com/p/${postId}/embed/`;
+            
+            card.innerHTML = `
+                <iframe 
+                    class="post-embed" 
+                    src="${embedUrl}"
+                    scrolling="no"
+                    allowtransparency="true"
+                    allow="encrypted-media"
+                    loading="lazy">
+                </iframe>
+                <a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="post-link">
+                    View on Instagram
+                </a>
+            `;
+            
+            return card;
+        }
+
+        function init() {
+            const grid = document.getElementById('posts-grid');
+            const stats = document.getElementById('stats');
+            
+            // Remove duplicates
+            const uniqueUrls = [...new Set(instagramUrls)];
+            const validPosts = uniqueUrls.filter(url => extractPostId(url));
+            
+            stats.textContent = `${validPosts.length} posts in collection`;
+            
+            validPosts.forEach(url => {
+                const card = createPostCard(url);
+                if (card) {
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
 </body>
 </html>
